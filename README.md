@@ -59,7 +59,7 @@ the new key has to ship in a new app version before events arrive again.
    ```
    https://github.com/furkanio/hookhaus-swift
    ```
-4. Set **Dependency Rule** to **Up to Next Major Version** and keep the suggested version (`0.2.0` or later).
+4. Set **Dependency Rule** to **Up to Next Major Version** and keep the suggested version (`0.3.0` or later).
 5. Click **Add Package**.
 6. In the next window, make sure **HookhausKit** is added to your **app target**, not only to a test target. Then
    click **Add Package**.
@@ -72,7 +72,7 @@ If you build a Swift package or use SPM directly:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.2.0"),
+    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.3.0"),
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -140,8 +140,10 @@ From now on, three events are tracked automatically:
 | `$app_open` | Every time the app comes to the foreground |
 | `$app_updated` | The first launch after the app version changed |
 
-> Events from the simulator and TestFlight count in your funnel like any other install. To keep your real numbers
-> clean, test with a separate app in Hookhaus (with its own key), or keep test runs short.
+> **Test events stay out of your numbers.** Events from the simulator or a Debug build are marked as development
+> events. They show up in **Recent events** (tagged "test") and, until the first real event arrives, in the funnel,
+> so you can check your setup. Once your App Store or TestFlight build sends events, funnels, retention and the
+> decision log count only those. TestFlight builds are Release builds, so they count as real users.
 
 ## 4. Mark your onboarding screens
 
@@ -377,7 +379,7 @@ can do this.
 | Nothing is queued at all | You set `requireConsent: true` without calling `grantConsent()`, or `optOut()` was called earlier. Call `optIn()`, or delete the app. |
 | Events arrive but no funnel | The automatic funnel needs events from at least two different steps. Go through onboarding once, or create a funnel in the panel. |
 | Steps are in the wrong order | Pass `index` to every `onboardingStep`, or reorder the steps in the panel's funnel editor. |
-| Test runs show up in the numbers | Test with a separate Hookhaus app and key, or keep test runs short. |
+| Test runs show up in the numbers | Simulator and Debug events are already left out. If you test with a Release build on a device, use a separate Hookhaus app and key. |
 
 ## Reference
 

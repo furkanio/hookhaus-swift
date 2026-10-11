@@ -59,7 +59,7 @@ sürümüyle yayına çıkana kadar olay gelmez.
    ```
    https://github.com/furkanio/hookhaus-swift
    ```
-4. **Dependency Rule** olarak **Up to Next Major Version** seç, önerilen sürümü (`0.2.0` ya da sonrası) bırak.
+4. **Dependency Rule** olarak **Up to Next Major Version** seç, önerilen sürümü (`0.3.0` ya da sonrası) bırak.
 5. **Add Package**'a bas.
 6. Açılan pencerede **HookhausKit**'in **app hedefine** eklendiğinden emin ol (yalnız test hedefine değil), sonra
    yine **Add Package**'a bas.
@@ -72,7 +72,7 @@ Swift paketi geliştiriyorsan ya da SPM'i doğrudan kullanıyorsan:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.2.0"),
+    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.3.0"),
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -140,8 +140,10 @@ Bundan sonra üç olay kendiliğinden gelir:
 | `$app_open` | App her öne geldiğinde |
 | `$app_updated` | App sürümü değiştikten sonraki ilk açılış |
 
-> Simülatörden ve TestFlight'tan gelen olaylar da hunide diğer kurulumlar gibi sayılır. Gerçek sayıların temiz
-> kalması için Hookhaus'ta ayrı bir deneme app'i (kendi anahtarıyla) kullan ya da denemeleri kısa tut.
+> **Deneme olayları sayılara girmez.** Simülatörden ya da Debug derlemesinden gelen olaylar geliştirme olayı olarak
+> işaretlenir. Bunlar **Son olaylar**'da "test" etiketiyle ve ilk gerçek olay gelene kadar hunide görünür; böylece
+> kurulumunu kontrol edebilirsin. App Store ya da TestFlight sürümünden olay gelmeye başlayınca huniler, elde tutma ve
+> karar defteri yalnız onları sayar. TestFlight derlemeleri Release olduğu için gerçek kullanıcı sayılır.
 
 ## 4. Onboarding ekranlarını işaretle
 
@@ -380,7 +382,7 @@ bölümüne kimliği yapıştırıp onayla. O kurulumun ya da kullanıcının t�
 | Hiçbir şey sıraya girmiyor | `requireConsent: true` verip `grantConsent()` çağırmamışsın ya da daha önce `optOut()` çağrılmış. `optIn()` çağır ya da app'i sil. |
 | Olaylar geliyor ama huni yok | Otomatik huni için en az iki farklı adımdan olay gerekir. Onboarding'i bir kez geç ya da panelde huni kur. |
 | Adımların sırası yanlış | Her `onboardingStep`'e `index` ver ya da paneldeki huni düzenleyiciden sırayı değiştir. |
-| Deneme çalıştırmaları sayılara giriyor | Ayrı bir Hookhaus app'i ve anahtarıyla dene ya da denemeleri kısa tut. |
+| Deneme çalıştırmaları sayılara giriyor | Simülatör ve Debug olayları zaten sayılmaz. Cihazda Release derlemesiyle deniyorsan ayrı bir Hookhaus app'i ve anahtarı kullan. |
 
 ## Başvuru
 

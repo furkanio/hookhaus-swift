@@ -11,6 +11,9 @@ struct DeviceContext: Encodable, Sendable {
     var device: String
     var locale: String
     var region: String?
+    /// Simulator or Debug build: Hookhaus keeps these events out of funnels and retention (they still show up while
+    /// you check your setup).
+    var dev: Bool
 
     static func current() -> DeviceContext {
         let info = Bundle.main.infoDictionary
@@ -27,8 +30,19 @@ struct DeviceContext: Encodable, Sendable {
             os_version: "\(os.majorVersion).\(os.minorVersion).\(os.patchVersion)",
             device: modelIdentifier(),
             locale: Locale.current.identifier,
-            region: region
+            region: region,
+            dev: isDevelopment
         )
+    }
+
+    static var isDevelopment: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #elseif DEBUG
+        return true
+        #else
+        return false
+        #endif
     }
 
     /// Hardware model, e.g. "iPhone16,2" (not unique to a person or device).

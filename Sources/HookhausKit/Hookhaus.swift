@@ -15,7 +15,7 @@ import Foundation
 /// privacy label answers.
 public enum Hookhaus {
     /// SDK version sent with every batch.
-    public static let version = "0.2.0"
+    public static let version = "0.3.0"
 
     static let engine = Engine()
 

@@ -54,6 +54,8 @@ final class HookhausKitTests: XCTestCase {
         XCTAssertEqual(batch["sdk"] as? String, "hookhaus-swift/\(Hookhaus.version)")
         XCTAssertNotNil(batch["sent_at"] as? String)
         XCTAssertNotNil((batch["context"] as? [String: Any])?["os_version"])
+        // Tests run in a Debug build: events are marked as development
+        XCTAssertEqual((batch["context"] as? [String: Any])?["dev"] as? Bool, true)
         let events = await server.events
         XCTAssertEqual(events.map { $0["event"] as? String }, ["$onboarding_step", "signup"])
         XCTAssertEqual((events[0]["props"] as? [String: Any])?["step"] as? String, "welcome")
