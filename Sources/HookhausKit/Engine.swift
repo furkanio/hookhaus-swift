@@ -224,7 +224,7 @@ actor Engine {
                 queue.removeFirst(min(batch.count, queue.count))
                 store.save(queue)
                 retries = 0
-                if status == 400 { log("server rejected a batch (400); dropped \(batch.count) events") }
+                if status == 400 { log("server rejected a batch (400); dropped \(batch.count) events") } else { log("sent \(batch.count) events") }
             case 413:
                 if batch.count == 1 {
                     queue.removeFirst()
