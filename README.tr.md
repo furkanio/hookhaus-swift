@@ -4,7 +4,7 @@ English: [README.md](README.md)
 
 HookhausKit, [Hookhaus](https://app.hookhaus.studio)'un app içi SDK'sıdır. iOS app'inde kullanıcıların nerede
 bıraktığını ölçer: ilk açılıştan başlayıp her onboarding ekranından geçerek paywall'a, denemeye ve satın almaya kadar.
-Sonuçlar Hookhaus panelinde **Sonuçlar → Huniler** altında görünür.
+Sonuçlar Hookhaus panelinde **Sonuçlar → Huniler** ve **Sonuçlar → Elde tutma** altında görünür.
 
 - **Gizlilik öncelikli:** Reklam kimliği (IDFA), IDFV ya da parmak izi kullanılmaz. Her kurulum rastgele bir
   kimlik alır; bu yüzden App Tracking Transparency izni gerekmez.
@@ -31,6 +31,7 @@ Sonuçlar Hookhaus panelinde **Sonuçlar → Huniler** altında görünür.
 8. [Yayınla](#8-yayınla)
 - [Ek: kullanıcı, rıza ve vazgeçme](#ek-kullanıcı-rıza-ve-vazgeçme)
 - [Ek: özel olaylar ve ekranlar](#ek-özel-olaylar-ve-ekranlar)
+- [Veri silme istekleri](#veri-silme-istekleri)
 - [Sorun giderme](#sorun-giderme)
 - [Başvuru](#başvuru)
 
@@ -58,7 +59,7 @@ sürümüyle yayına çıkana kadar olay gelmez.
    ```
    https://github.com/furkanio/hookhaus-swift
    ```
-4. **Dependency Rule** olarak **Up to Next Major Version** seç, önerilen sürümü (`0.1.1` ya da sonrası) bırak.
+4. **Dependency Rule** olarak **Up to Next Major Version** seç, önerilen sürümü (`0.2.0` ya da sonrası) bırak.
 5. **Add Package**'a bas.
 6. Açılan pencerede **HookhausKit**'in **app hedefine** eklendiğinden emin ol (yalnız test hedefine değil), sonra
    yine **Add Package**'a bas.
@@ -71,7 +72,7 @@ Swift paketi geliştiriyorsan ya da SPM'i doğrudan kullanıyorsan:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.1.1"),
+    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.2.0"),
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -299,8 +300,10 @@ ekler. `Hookhaus.identify` kullanıyorsan User ID'yi app'inin kendi gizlilik man
   göndermez.
 - Huniler sayfasındaki **Mağazadan app'e** bölümü App Store gösterimlerini, ürün sayfası görüntülemelerini ve ilk
   indirmeleri ilk açılışlarla yan yana koyar. Apple'ın sayıları 1–3 gün gecikmeli gelir.
-- Bir ekranı değiştirdiğinde **Karar defteri**'ne yaz. Hookhaus onboarding tamamlama oranını değişiklikten önce ve
-  sonra ölçer.
+- Bir ekranı değiştirdiğinde **Karar defteri**'ne yaz. Hookhaus onboarding tamamlama oranını (ya da 1. gün geri
+  dönüş oranını) değişiklikten önce ve sonra ölçer.
+- **Sonuçlar → Elde tutma**, kurulumların app'i ilk açtıkları güne göre 1., 7. ve 30. günde kaçının geri geldiğini
+  gösterir.
 
 ---
 
@@ -349,6 +352,20 @@ SettingsView().hookhausScreen("settings")
   kesilir.
 - **Kişisel veri yok:** Özelliklere e-posta, ad, telefon numarası ya da kullanıcının yazdığı serbest metni koyma.
 
+## Veri silme istekleri
+
+Bir kullanıcı verisinin silinmesini isterse, onu bulmak için bir kimlik gerekir:
+
+- **Hesapsız app'lerde:** kurulum kimliğini app'te göster, ör. Ayarlar → Destek altında:
+  ```swift
+  let id = await Hookhaus.installId()
+  ```
+- **Hesaplı app'lerde:** `Hookhaus.identify` ile verdiğin kullanıcı kimliğini kullan.
+
+Sonra panelde **Sonuçlar → Huniler → App içi SDK → Gizlilik ve App Store gizlilik etiketi → Kullanıcı verisini sil**
+bölümüne kimliği yapıştırıp onayla. O kurulumun ya da kullanıcının tüm olayları kalıcı olarak silinir. Bunu yalnız
+çalışma alanı yöneticileri yapabilir.
+
 ---
 
 ## Sorun giderme
@@ -384,6 +401,7 @@ SettingsView().hookhausScreen("settings")
 | `Hookhaus.grantConsent()` | `requireConsent` açıkken toplamayı başlatır. |
 | `Hookhaus.optOut()` / `optIn()` | Toplamayı durdurur ya da yeniden başlatır. |
 | `Hookhaus.flush()` | Sıradaki olayları hemen gönderir. |
+| `await Hookhaus.installId()` | Bu kurulumun rastgele kimliği; veri silme istekleri için. |
 | `.hookhausOnboardingStep(_:index:)`, `.hookhausPaywall(_:)`, `.hookhausScreen(_:)` | `onAppear`'da çalışan SwiftUI değiştiricileri. |
 
 ### Seçenekler

@@ -4,7 +4,7 @@ Türkçe: [README.tr.md](README.tr.md)
 
 HookhausKit is the in-app SDK for [Hookhaus](https://app.hookhaus.studio). It measures where people drop off in your
 iOS app: from first open, through each onboarding screen, to the paywall, trial and purchase. The results appear in
-your Hookhaus panel under **Results → Funnels**.
+your Hookhaus panel under **Results → Funnels** and **Results → Retention**.
 
 - **Private by design:** no advertising ID (IDFA), no IDFV and no fingerprinting. Each install gets a random ID, so
   no App Tracking Transparency prompt is needed.
@@ -31,6 +31,7 @@ your Hookhaus panel under **Results → Funnels**.
 8. [Release](#8-release)
 - [Optional: users, consent and opt-out](#optional-users-consent-and-opt-out)
 - [Optional: custom events and screens](#optional-custom-events-and-screens)
+- [Data deletion requests](#data-deletion-requests)
 - [Troubleshooting](#troubleshooting)
 - [Reference](#reference)
 
@@ -58,7 +59,7 @@ the new key has to ship in a new app version before events arrive again.
    ```
    https://github.com/furkanio/hookhaus-swift
    ```
-4. Set **Dependency Rule** to **Up to Next Major Version** and keep the suggested version (`0.1.1` or later).
+4. Set **Dependency Rule** to **Up to Next Major Version** and keep the suggested version (`0.2.0` or later).
 5. Click **Add Package**.
 6. In the next window, make sure **HookhausKit** is added to your **app target**, not only to a test target. Then
    click **Add Package**.
@@ -71,7 +72,7 @@ If you build a Swift package or use SPM directly:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.1.1"),
+    .package(url: "https://github.com/furkanio/hookhaus-swift", from: "0.2.0"),
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -297,7 +298,8 @@ automatically. If you call `Hookhaus.identify`, also declare User ID in your app
 - The **From store to app** panel on the Funnels page puts App Store impressions, product page views and first
   downloads next to first opens. Apple's numbers arrive 1–3 days late.
 - When you change a screen, log it in the **Decision log**. Hookhaus then measures the onboarding completion rate
-  before and after the change.
+  (or the day-1 return rate) before and after the change.
+- **Results → Retention** shows how many installs come back on day 1, 7 and 30, by the day they first opened the app.
 
 ---
 
@@ -347,6 +349,20 @@ You can use custom events as funnel steps in the panel.
 - **No personal data:** do not put e-mail addresses, names, phone numbers or free text the user typed into
   properties.
 
+## Data deletion requests
+
+If a user asks you to delete their data, you need an ID to find it:
+
+- **Without accounts:** show the install ID in your app, for example under Settings → Support:
+  ```swift
+  let id = await Hookhaus.installId()
+  ```
+- **With accounts:** use the user ID you passed to `Hookhaus.identify`.
+
+Then, in the panel, open **Results → Funnels → In-app SDK → Privacy and the App Store privacy label → Delete user
+data**, paste the ID and confirm. All events of that install or user are deleted permanently. Only workspace admins
+can do this.
+
 ---
 
 ## Troubleshooting
@@ -382,6 +398,7 @@ You can use custom events as funnel steps in the panel.
 | `Hookhaus.grantConsent()` | Start collecting when `requireConsent` is on. |
 | `Hookhaus.optOut()` / `optIn()` | Stop or resume collecting. |
 | `Hookhaus.flush()` | Send queued events now. |
+| `await Hookhaus.installId()` | This install's random ID, for data deletion requests. |
 | `.hookhausOnboardingStep(_:index:)`, `.hookhausPaywall(_:)`, `.hookhausScreen(_:)` | SwiftUI modifiers that fire in `onAppear`. |
 
 ### Options

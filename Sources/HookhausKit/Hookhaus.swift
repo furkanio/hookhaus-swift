@@ -15,7 +15,7 @@ import Foundation
 /// privacy label answers.
 public enum Hookhaus {
     /// SDK version sent with every batch.
-    public static let version = "0.1.1"
+    public static let version = "0.2.0"
 
     static let engine = Engine()
 
@@ -76,6 +76,12 @@ public enum Hookhaus {
     public static func identify(_ userId: String) {
         let at = Date()
         Task { await engine.identify(userId, at: at) }
+    }
+
+    /// This install's random ID. Show it to the user (e.g. in Settings → Support) so a data deletion request can be
+    /// matched in Hookhaus → Funnels → Privacy. It changes after `reset()` or reinstalling the app.
+    public static func installId() async -> String {
+        await engine.installId
     }
 
     /// Forget the user id and start a new install id (e.g. on log-out).

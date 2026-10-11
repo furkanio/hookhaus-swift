@@ -144,6 +144,7 @@ final class HookhausKitTests: XCTestCase {
         left = await e.queued
         XCTAssertEqual(left.map(\.event), ["$first_open"], "second launch has no first open")
         let install = await e.installId
+        XCTAssertEqual(install.count, 36)
         await e.identify("user-42", at: Date())
         left = await e.queued
         XCTAssertEqual(left.last?.user_id, "user-42")
